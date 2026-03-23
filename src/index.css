@@ -1,0 +1,327 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root,
+[data-theme="dark"] {
+  --primary: #00D4FF;
+  --primary-strong: #00A8CC;
+  --primary-soft: #0A3D4D;
+  --primary-glow: rgba(0, 212, 255, 0.2);
+  
+  --secondary: #60A5FA;
+  --secondary-strong: #2563EB;
+  --secondary-soft: #1E3A5F;
+  
+  --accent: #26F29F;
+  --accent-glow: rgba(38, 242, 159, 0.2);
+  
+  --background: #0A1520;
+  --surface: #111D2A;
+  --surface-elevated: #172635;
+  --surface-hover: #1E3040;
+  
+  --text-primary: #FFFFFF;
+  --text-secondary: #9FB8C6;
+  --text-muted: #6B8A99;
+  --text-inverse: #0A1520;
+  
+  --border: #1F3640;
+  --border-strong: #2D4A56;
+  --border-dashed: #2D4A56;
+  
+  --success: #26F29F;
+  --success-bg: #0D3D2D;
+  --success-text: #26F29F;
+  
+  --warning: #FB923C;
+  --warning-bg: #3D2814;
+  --warning-text: #FB923C;
+  
+  --danger: #FB7185;
+  --danger-bg: #3D1419;
+  --danger-text: #FB7185;
+  
+  --info: #5CC8FF;
+  --info-bg: #0D2840;
+  --info-text: #5CC8FF;
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 30px var(--primary-glow);
+  
+  --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-strong) 100%);
+  --gradient-card: linear-gradient(180deg, var(--surface-elevated) 0%, var(--surface) 100%);
+}
+
+[data-theme="light"] {
+  --background: #F4F9FC;
+  --surface: #FFFFFF;
+  --surface-elevated: #EDF4F8;
+  --surface-hover: #E0EDF5;
+  
+  --text-primary: #0F172A;
+  --text-secondary: #3B5563;
+  --text-muted: #64748B;
+  --text-inverse: #FFFFFF;
+  
+  --border: #CDE6D9;
+  --border-strong: #9FCFB3;
+  --border-dashed: #B8D4E3;
+  
+  --success-bg: #D1FAE5;
+  --success-text: #065F46;
+  
+  --warning-bg: #FEF3C7;
+  --warning-text: #92400E;
+  
+  --danger-bg: #FEE2E2;
+  --danger-text: #991B1B;
+  
+  --info-bg: #DBEAFE;
+  --info-text: #1E40AF;
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+html {
+  transition: background-color 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    transition: none;
+  }
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--background);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  min-height: 48px;
+  min-width: 48px;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border: 2px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--surface-hover);
+  border-color: var(--primary);
+}
+
+.btn-large {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 1rem;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: var(--danger-text);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 0.5rem;
+}
+
+.btn-ghost:hover {
+  background: var(--surface-elevated);
+  color: var(--primary);
+}
+
+.card {
+  background: var(--surface);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-elevated {
+  background: var(--surface-elevated);
+}
+
+.input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  background: var(--surface);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+.label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-success {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.badge-warning {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.badge-danger {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.badge-info {
+  background: var(--info-bg);
+  color: var(--info-text);
+}
+
+.badge-active {
+  background: var(--success);
+  color: var(--text-inverse);
+  font-size: 0.65rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+.main-content {
+  flex: 1;
+  padding-top: 0;
+  padding-bottom: 100px;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.view-all-link {
+  font-size: 0.85rem;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .main-content {
+    padding-bottom: 90px;
+  }
+}
