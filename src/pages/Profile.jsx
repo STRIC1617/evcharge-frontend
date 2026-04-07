@@ -24,7 +24,7 @@ export default function Profile() {
 
   const loadVehicles = async () => {
     try {
-      const data = await api.get('/auth/vehicles')
+      const data = await api.get('/vehicles')
       setVehicles(data)
     } catch (error) {
       console.error('Failed to load vehicles:', error)
@@ -36,7 +36,7 @@ export default function Profile() {
   const handleAddVehicle = async (e) => {
     e.preventDefault()
     try {
-      await api.post('/auth/vehicles', {
+      await api.post('/vehicles', {
         ...vehicleForm,
         year: parseInt(vehicleForm.year),
         battery_capacity: parseFloat(vehicleForm.battery_capacity)
