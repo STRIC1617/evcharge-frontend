@@ -119,7 +119,7 @@ export default function Home() {
       setStats({
         sessions: completedSessions.length,
         energy: totalEnergy,
-        spending: summary.total_amount || 0
+        spending: summary.total_spent || 0
       })
     } catch (error) {
       console.error('Failed to load stats:', error)

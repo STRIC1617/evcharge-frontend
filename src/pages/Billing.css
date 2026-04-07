@@ -370,6 +370,11 @@
   color: white;
 }
 
+.message-toast.info {
+  background: #5f259f;
+  color: white;
+}
+
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -543,6 +548,54 @@
 
 .btn-primary:hover {
   background: var(--primary-strong);
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.payment-method.recommended .method-content {
+  border-color: #5f259f;
+  background: linear-gradient(135deg, rgba(95, 37, 159, 0.1) 0%, var(--surface-elevated) 100%);
+}
+
+.payment-method.recommended input:checked + .method-content {
+  border-color: #5f259f;
+  background: linear-gradient(135deg, rgba(95, 37, 159, 0.2) 0%, var(--primary-soft) 100%);
+}
+
+.phonepe-logo {
+  flex-shrink: 0;
+}
+
+.method-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.method-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.method-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.recommended-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  background: #5f259f;
+  color: white;
+  border-radius: 9999px;
+  flex-shrink: 0;
 }
 
 @media (max-width: 480px) {

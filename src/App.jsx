@@ -12,8 +12,12 @@ import Billing from './pages/Billing'
 import Journey from './pages/Journey'
 import Charge from './pages/Charge'
 import Profile from './pages/Profile'
+import Notifications from './pages/Notifications'
+import Privacy from './pages/Privacy'
+import Help from './pages/Help'
 import { AuthProvider, useAuth } from './hooks/useAuth'
 import { ThemeProvider } from './hooks/useTheme'
+import InstallPrompt from './components/InstallPrompt'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -39,6 +43,9 @@ function AppRoutes() {
       <Route path="/sessions" element={<ProtectedRoute><Sessions /></ProtectedRoute>} />
       <Route path="/billing" element={<ProtectedRoute><Billing /></ProtectedRoute>} />
       <Route path="/history" element={<ProtectedRoute><Sessions /></ProtectedRoute>} />
+      <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+      <Route path="/privacy" element={<ProtectedRoute><Privacy /></ProtectedRoute>} />
+      <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
     </Routes>
   )
 }
@@ -53,6 +60,7 @@ function App() {
               <AppRoutes />
             </main>
             <BottomNav />
+            <InstallPrompt />
           </div>
         </AuthProvider>
       </ThemeProvider>

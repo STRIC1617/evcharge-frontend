@@ -1,4 +1,4 @@
-const API_BASE = 'https://ev-charging-demo-api.onrender.com/api'
+const API_BASE = '/api'
 
 async function request(endpoint, options = {}) {
   const token = localStorage.getItem('token')

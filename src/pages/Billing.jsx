@@ -1,20 +1,52 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { api } from '../utils/api'
 import './Billing.css'
 
 export default function Billing() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [invoices, setInvoices] = useState([])
   const [summary, setSummary] = useState(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('all')
   const [showPayModal, setShowPayModal] = useState(false)
   const [selectedInvoice, setSelectedInvoice] = useState(null)
-  const [paymentMethod, setPaymentMethod] = useState('card')
+  const [paymentMethod, setPaymentMethod] = useState('phonepe')
   const [message, setMessage] = useState(null)
+  const [processingPayment, setProcessingPayment] = useState(false)
+  const [checkingPayment, setCheckingPayment] = useState(false)
+
+  const checkPaymentStatus = useCallback(async (txnId) => {
+    setCheckingPayment(true)
+    try {
+      const result = await api.get(`/payments/phonepe/status/${txnId}`)
+      if (result.status === 'completed') {
+        setMessage({ type: 'success', text: 'Payment successful!' })
+        loadData()
+      } else if (result.status === 'pending') {
+        setMessage({ type: 'info', text: 'Payment is being processed...' })
+        setTimeout(() => checkPaymentStatus(txnId), 3000)
+        return
+      } else {
+        setMessage({ type: 'error', text: result.message || 'Payment failed' })
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Failed to check payment status' })
+    } finally {
+      setCheckingPayment(false)
+      setTimeout(() => setMessage(null), 5000)
+    }
+  }, [])
 
   useEffect(() => {
     loadData()
-  }, [])
+    
+    const txnId = searchParams.get('txn')
+    if (txnId) {
+      setSearchParams({})
+      checkPaymentStatus(txnId)
+    }
+  }, [searchParams, setSearchParams, checkPaymentStatus])
 
   const loadData = async () => {
     try {
@@ -33,22 +65,37 @@ export default function Billing() {
 
   const openPayModal = (invoice) => {
     setSelectedInvoice(invoice)
-    setPaymentMethod('card')
+    setPaymentMethod('phonepe')
     setShowPayModal(true)
   }
 
   const handlePayInvoice = async () => {
     if (!selectedInvoice) return
+    setProcessingPayment(true)
 
     try {
-      await api.post(`/billing/pay/${selectedInvoice.id}`, { payment_method: paymentMethod })
-      setShowPayModal(false)
-      setSelectedInvoice(null)
-      setMessage({ type: 'success', text: 'Payment successful!' })
-      setTimeout(() => setMessage(null), 3000)
-      loadData()
+      if (paymentMethod === 'phonepe') {
+        const response = await api.post('/payments/phonepe/initiate', { 
+          invoice_id: selectedInvoice.id 
+        })
+        
+        if (response.success && response.redirect_url) {
+          window.location.href = response.redirect_url
+        } else {
+          setMessage({ type: 'error', text: response.message || 'Failed to initiate payment' })
+        }
+      } else {
+        await api.post(`/billing/pay/${selectedInvoice.id}`, { payment_method: paymentMethod })
+        setShowPayModal(false)
+        setSelectedInvoice(null)
+        setMessage({ type: 'success', text: 'Payment successful!' })
+        setTimeout(() => setMessage(null), 3000)
+        loadData()
+      }
     } catch (error) {
       setMessage({ type: 'error', text: error.message })
+    } finally {
+      setProcessingPayment(false)
     }
   }
 
@@ -254,6 +301,29 @@ export default function Billing() {
             </div>
 
             <div className="payment-methods">
+              <label className="payment-method recommended">
+                <input 
+                  type="radio" 
+                  name="payment" 
+                  value="phonepe"
+                  checked={paymentMethod === 'phonepe'}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                <div className="method-content">
+                  <div className="phonepe-logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <rect width="24" height="24" rx="4" fill="#5f259f"/>
+                      <path d="M12 4C7.58 4 4 7.58 4 12s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z" fill="white"/>
+                      <path d="M14 9h-3v6h2v-2h1c1.1 0 2-.9 2-2s-.9-2-2-2zm0 3h-1v-1h1c.28 0 .5.22.5.5s-.22.5-.5.5z" fill="white"/>
+                    </svg>
+                  </div>
+                  <div className="method-text">
+                    <span className="method-name">PhonePe / UPI</span>
+                    <span className="method-desc">Pay with any UPI app</span>
+                  </div>
+                  <span className="recommended-badge">Recommended</span>
+                </div>
+              </label>
               <label className="payment-method">
                 <input 
                   type="radio" 
@@ -267,7 +337,9 @@ export default function Billing() {
                     <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
                     <line x1="1" y1="10" x2="23" y2="10"/>
                   </svg>
-                  <span>Credit/Debit Card</span>
+                  <div className="method-text">
+                    <span className="method-name">Credit/Debit Card</span>
+                  </div>
                 </div>
               </label>
               <label className="payment-method">
@@ -284,34 +356,19 @@ export default function Billing() {
                     <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
                     <path d="M18 12a2 2 0 0 0 0 4h4v-4z"/>
                   </svg>
-                  <span>Wallet Balance</span>
-                </div>
-              </label>
-              <label className="payment-method">
-                <input 
-                  type="radio" 
-                  name="payment" 
-                  value="upi"
-                  checked={paymentMethod === 'upi'}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                />
-                <div className="method-content">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="16"/>
-                    <line x1="8" y1="12" x2="16" y2="12"/>
-                  </svg>
-                  <span>UPI</span>
+                  <div className="method-text">
+                    <span className="method-name">Wallet Balance</span>
+                  </div>
                 </div>
               </label>
             </div>
 
             <div className="modal-actions">
-              <button className="btn-secondary" onClick={() => setShowPayModal(false)}>
+              <button className="btn-secondary" onClick={() => setShowPayModal(false)} disabled={processingPayment}>
                 Cancel
               </button>
-              <button className="btn-primary" onClick={handlePayInvoice}>
-                Confirm Payment
+              <button className="btn-primary" onClick={handlePayInvoice} disabled={processingPayment}>
+                {processingPayment ? 'Processing...' : paymentMethod === 'phonepe' ? 'Pay with PhonePe' : 'Confirm Payment'}
               </button>
             </div>
           </div>
